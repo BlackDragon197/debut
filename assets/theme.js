@@ -2861,27 +2861,25 @@ theme.Header = (function() {
 
   function init() {
     cacheSelectors();
-    styleDropdowns(document.querySelectorAll(selectors.siteNavHasDropdown));
-    positionFullWidthDropdowns();
-
-    cache.parents.forEach(function(element) {
-      element.addEventListener('click', submenuParentClickHandler);
+    $(selectors.siteNavHasDropdown).on('mouseenter', function() {
+        var $el = $(this);
+      showDropdown($el);
     });
-
-    // check when we're leaving a dropdown and close the active dropdown
-    cache.siteNavChildLink.forEach(function(element) {
-      element.addEventListener('focusout', submenuFocusoutHandler);
+    $('.site-nav__dropdown').on('mouseenter', function() {
+      $(this).show();
+        $(this).parent().addClass(config.activeClass);
     });
-
-    cache.topLevel.forEach(function(element) {
-      element.addEventListener('focus', hideDropdown);
+    $(selectors.siteNavHasDropdown).on('mouseleave', function() {
+      hideDropdown(cache.$activeDropdown);
     });
-
-    cache.subMenuLinks.forEach(function(element) {
-      element.addEventListener('click', stopImmediatePropagation);
+    $('.site-nav__dropdown').on('mouseleave', function() {
+        hideDropdown(cache.$activeDropdown);
+        $(this).hide();
     });
-
-    window.addEventListener('resize', resizeHandler);
+    cache.$subMenuLinks.on('click.siteNav', function(evt) {
+      // Prevent click on body from firing instead of link
+      evt.stopImmediatePropagation();
+    });
   }
 
   function stopImmediatePropagation(event) {
@@ -2902,21 +2900,20 @@ theme.Header = (function() {
     };
   }
 
-  function showDropdown(element) {
-    element.classList.add(config.activeClass);
-
-    if (cache.activeDropdown) hideDropdown();
-
-    cache.activeDropdown = element;
-
-    element
-      .querySelector(selectors.siteNavLinkMain)
-      .setAttribute('aria-expanded', 'true');
-
-    setTimeout(function() {
-      window.addEventListener('keyup', keyUpHandler);
-      document.body.addEventListener('click', hideDropdown);
-    }, 250);
+  function showDropdown($el) {
+    $el.addClass(config.activeClass);
+    var headerHeight = $('#shopify-section-header').outerHeight(),
+        headerNav = $el.find('.site-nav__dropdown').outerHeight();
+    $el.find('.site-nav__dropdown').css({top: +headerHeight+ 'px'});
+    cache.$activeDropdown = $el;
+  }
+  function hideDropdown($el) {
+    // remove aria on open dropdown
+    $el.removeClass(config.activeClass);
+    // reset active dropdown
+    cache.$activeDropdown = $(selectors.siteNavActiveDropdown);
+    $(selectors.body).off('click.siteNav');
+    $(window).off('keyup.siteNav');
   }
 
   function hideDropdown() {
