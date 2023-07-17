@@ -74,6 +74,11 @@
                         </a>
                       </li>
                     {% endfor %}
+                    <li class="site-nav__childlist-item">
+                      <a href="{{ childlink.url }}" class="site-nav__child-link">
+                        {{ childlink.title }}
+                      </a>
+                    </li>
                   </ul>
                 {% endif %}
               {% endfor %}
