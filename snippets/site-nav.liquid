@@ -37,7 +37,7 @@
                   {% if childlink.links == blank %}
                     <li class="{% if childlink.active %}site-nav--active{% endif %}" data-id="mega-parent-{{ childlink.handle }}">
                       <a href="{{ childlink.url }}" class="site-nav__link main-bold-title">
-                        {{ childlink.title | escape }}
+                        <u>{{ childlink.title | escape }}</u>
                       </a>
                     </li>
                   {% endif %}
@@ -76,7 +76,7 @@
                     {% endfor %}
                     <li class="site-nav__childlist-item">
                       <a href="{{ childlink.url }}" class="site-nav__child-link">
-                        {{ childlink.title }}
+                        <i>{{ childlink.title }}</i>
                       </a>
                     </li>
                   </ul>
